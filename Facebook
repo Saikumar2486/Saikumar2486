@@ -1,0 +1,8 @@
+#selenium automation browser
+
+from selenium import webdriver
+
+ def open_website(url):
+     driver = webdriver.Chrome()
+     return(driver.get(url))
+ open_website('https://www.facebook.com')
