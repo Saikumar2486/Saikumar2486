@@ -1,0 +1,10 @@
+from Pytest import Guvi
+
+@Pytest.mark.first_odd_even
+def test_odd_even_1():
+    data = 25
+    assert Guvi().odd_even(data) == 'even'
+@Pytest.mark.second_odd_even
+def test_odd_even_2():
+    data = 400
+    assert Guvi().odd_even(data) == 'odd'
