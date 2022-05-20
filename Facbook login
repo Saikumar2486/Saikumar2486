@@ -1,0 +1,21 @@
+#facebook login Useing Automation
+
+
+from selenium import webdriver
+from selemium.webdriver.common.keys import keys
+
+    def Saikumar_facebook(username, password):
+      user_name = saikumaar
+      password = suman123
+      d = webdriver.Chrome()
+      d.get('https//:www.facebook.com')
+      element = d.find_element_by_id('email')
+      element.send_keys(user_name)
+      element = d.find_element_by_id('pass')
+      element.send_keys(password)
+
+      element.send_keys(keys.RETURN)
+      element.close()
+
+
+    saikumar_facebook(username, password)
