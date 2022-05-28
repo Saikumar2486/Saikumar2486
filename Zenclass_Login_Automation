@@ -1,0 +1,72 @@
+import time
+import csv
+import requests as requests
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.common.alert import Alert
+from selenium.webdriver.common.action_chains import ActionChains
+
+
+def zen_login(url):
+    driver = webdriver.Chrome(executable_path="C:\\Software\\chrome\\chromedriver.exe")
+    return (driver.get(url))
+    zen_login("https://www.zenclass.in/login")
+    print(driver.title)
+
+    driver.find_element(by=By.XPATH, value='//*[@id="root"]/div/div/div[1]/div[2]/div/div[1]/form/div[1]/div/input'
+                    ).send_keys("saikumar.p1626@gmail.com")
+    driver.find_element(by=By.XPATH, value='//*[@id="root"]/div/div/div[1]/div[2]/div/div[1]/form/div[2]/div/input'
+                        ).send_keys("Amazon@7410")
+    login_button = driver.find_element(by=By.XPATH, value='//*[@id="root"]/div/div/div[1]/div[2]/div/div[1]/form/button')
+
+    time.sleep(2)
+    login_button.click()
+    time.sleep(5)
+
+def fetch_data():
+
+    hover_over = driver.find_element(by=By.XPATH, value='//*[@id="root"]/div[1]/nav/ul/li/div/div/svg/rect')
+    achains = ActionChains(driver)
+    achains.move_to_element(hover_over).perform()
+    xpath = '//*[@id="root"]/div[1]/nav/ul'
+    details = driver.find_element(by=By.XPATH, value=xpath)
+
+def create_query():
+
+    count = 0
+    while count <5:
+     click_createquery = driver.find_element(by=By.XPATH, value='//*[@id="root"]/div[2]/div/div[1]/div[1]/button'
+                                            ).click_createquery.click()
+    click_cancle = driver.find_element(by=By.XPATH, value='//*[@id="WelcomeModal"]/div/div/section[3]/div[2]/button[1]'
+                                       ).click_cancle.click()
+    click_category = driver.find_element(by=By.XPATH, value='//*[@id="root"]/div[2]/div/div[2]/div/div/form/div[2]/div[1]/select'
+                                         ).click_category.click()
+
+    click_dd = select(click_subcategory)
+    click_dd.select_by_index(1)  #selecting zen-class doubts
+    click_subcategory = driver.find_element(by=By.XPATH, value='//*[@id="root"]/div[2]/div/div[2]/div/div/form/div[2]/div[1]/select'
+                                            ).click_subcategory.click()
+    click_dd = Select(click_subcategory)
+    click_dd.select_by_index(1)  # selecting Task
+    language_1 = driver.find_element(by=By.XPATH, value='//*[@id="root"]/div[2]/div/div[2]/div/div/form/div[2]/div[1]/select'
+                                     ).language_1.click()
+
+
+    click_dd = Select(language_1)
+    click_dd.select_by_index(1)  # selecting Task
+    scroll = driver.find_element(by=By.XPATH, value='//*[@id="root"]/div[2]/div/div[2]/div/div/form/div[2]/div[2]/label(1)'
+                             )
+    driver.execute_script("arguments[0],scrollIntoView();", scroll)
+    query_title = driver.find_element(by=By.XPATH, value='//*[@id="root"]/div[2]/div/div[2]/div/div/form/div[5]/div/input')
+    query_title.send_keys("Guci python AT -1&2 automation Projects")
+
+    query_description = driver.find_element(by=By.XPATH, value='//*[@id="root"]/div[2]/div/div[2]/div/div/form/div[5]/textarea'
+                                        ).query_description.send_keys("this is Automation Project Testing code")
+    click_create = driver.find_element(by=By.XPATH, value='//*[@id="root"]/div[2]/div/div[2]/div/div/form/div[13]/div/button'
+                                   ).click_create.click()
+
+
+    time.sleep(10)
+driver.close()
