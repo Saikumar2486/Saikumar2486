@@ -1,0 +1,73 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+# from webdriver_manager.chrome import ChromeDriverManger
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait as wait
+from selenium.webdriver.support import expected_conditions as EC
+import pandas as pd
+
+
+web = 'https://www.amazon.com'
+driver_path =r'C:\Users\Sai\Downloads\chromedriver.exe'
+
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+
+# driver = webdriver.Chrome(options=options, service=Service(ChromeDriverManager().install()))
+driver=webdriver.Chrome(driver_path)
+driver.get(web)
+
+driver.implicitly_wait(5)
+keyword = "laptops"
+search = driver.find_element(By.ID, 'twotabsearchtextbox')
+search.send_keys(keyword)
+# click search button
+search_button = driver.find_element(By.ID, 'nav-search-submit-button')
+search_button.click()
+
+driver.implicitly_wait(5)
+items = wait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, '//div[contains(@class, "s-result-item s-asin")]')))
+product_list=[]
+for item in items[:5]:
+    # find name
+    product_detalis={}
+    name = item.find_element(By.XPATH, './/span[@class="a-size-medium a-color-base a-text-normal"]')
+    product_detalis['Title']=name.text
+
+    # find ASIN number 
+    data_asin = item.get_attribute("data-asin")
+    product_detalis['data_asin']= data_asin
+
+    # find price
+    whole_price = item.find_elements(By.XPATH, './/span[@class="a-price-whole"]')
+    fraction_price = item.find_elements(By.XPATH, './/span[@class="a-price-fraction"]')
+    
+    if whole_price != [] and fraction_price != []:
+        price = '.'.join([whole_price[0].text, fraction_price[0].text])
+    else:
+        price = 0
+    product_detalis["price"]=price
+    # find ratings box
+    ratings_box = item.find_elements(By.XPATH, './/div[@class="a-row a-size-small"]/span')
+
+    # find ratings and ratings_num
+    if ratings_box != []:
+        ratings = ratings_box[0].get_attribute('aria-label')
+        ratings_num = ratings_box[1].get_attribute('aria-label')
+    else:
+        ratings, ratings_num = 0, 0    
+    product_detalis['ratings']=ratings
+    product_detalis['ratings_nums']=ratings_num
+    # find link
+    link = item.find_element(By.XPATH, './/a[@class="a-link-normal s-underline-text s-underline-link-text s-link-style a-text-normal"]').get_attribute("href")
+    product_detalis['link']=link
+    product_list.append(product_detalis)
+driver.quit()
+df = pd.DataFrame.from_dict(product_list)
+print(df)
+df.to_excel('product_details.xlsx')
+df['price']=df['price'].astype(float)
+df1=df.sort_values('price')
+df2=df1.head(3)
+print("*******Top 3 brands are: **********")
+print(df2)
