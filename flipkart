@@ -1,0 +1,52 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+# from webdriver_manager.chrome import ChromeDriverManger
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait as wait
+from selenium.webdriver.support import expected_conditions as EC
+import pandas as pd
+
+
+web = 'https://www.flipkart.com'
+driver_path =r"C:\Users\Sai\Downloads\chromedriver.exe"
+
+options = webdriver.ChromeOptions()
+options.add_argument('--headless')
+driver=webdriver.Chrome(driver_path)
+driver.get(web)
+
+driver.implicitly_wait(5)
+keyword = "Mobiles"
+close_button=driver.find_element(By.XPATH,'.//button[@class="_2KpZ6l _2doB4z"]')
+close_button.click()
+search = driver.find_element(By.XPATH,'.//input[@class="_3704LK"]')
+search.send_keys(keyword)
+# # click search button
+search_button = driver.find_element(By.XPATH,'.//button[@class="L0Z3Pu"]')
+search_button.click()
+
+driver.implicitly_wait(5)
+items = wait(driver, 10).until(EC.presence_of_all_elements_located((By.XPATH, '//div[contains(@class,"_3pLy-c row")]')))
+print(len(items))
+product_list=[]
+for item in items[:5]:
+#     # find name
+    product_detalis={}
+    name = item.find_element(By.XPATH, './/div[@class="_4rR01T"]')
+    product_detalis['Title']=name.text
+    price = item.find_elements(By.XPATH, './/div[@class="_30jeq3 _1_WHN1"]')
+    product_detalis["price"]=price[0].text
+#     # find ratings box
+    ratings = item.find_elements(By.XPATH, './/div[@class="_3LWZlK"]')
+    print(ratings[0].text)
+    product_detalis['rating']=ratings[0].text
+    product_list.append(product_detalis)
+driver.quit()
+df = pd.DataFrame.from_dict(product_list)
+print(df)
+df.to_excel('product_details.xlsx')
+df['price']=df['price'].astype(float)
+df1=df.sort_values('price')
+df2=df1.head(3)
+print("*******Top 3 brands are: **********")
+print(df2)
